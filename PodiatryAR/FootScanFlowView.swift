@@ -114,6 +114,27 @@ final class FootScanFlowViewModel: ObservableObject {
         phase = .intro
     }
 
+    /// Bypasses ARKit/LiDAR capture entirely and runs a stand-in mesh through the
+    /// same processing → ML → review pipeline. Useful for testing on the simulator
+    /// or a non-LiDAR device — see SampleMeshLoader.swift. Swap `proceduralTestFoot()`
+    /// for `loadFootMesh(from:)` pointed at a bundled sample OBJ/USDZ for a more
+    /// realistic test shape.
+    func loadTestMesh() {
+        phase = .processing
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let mesh = SampleMeshLoader.proceduralTestFoot()
+            let landmarks = FootLandmarkPredictor.predict(mesh: mesh)
+            let measurements = FootMeshProcessor.boundingMeasurements(mesh)
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.processedMesh = mesh
+                self.landmarks = landmarks
+                self.measurements = measurements
+                self.phase = .review
+            }
+        }
+    }
+
     // MARK: - Processing pipeline
 
     nonisolated private static func processScan(
@@ -156,9 +177,9 @@ struct FootScanFlowView: View {
         Group {
             switch viewModel.phase {
             case .intro:
-                IntroView(onStart: viewModel.startScanning)
+                IntroView(onStart: viewModel.startScanning, onTestMesh: viewModel.loadTestMesh)
             case .unsupportedDevice:
-                UnsupportedDeviceView(onDismiss: viewModel.reset)
+                UnsupportedDeviceView(onDismiss: viewModel.reset, onTestMesh: viewModel.loadTestMesh)
             case .scanning:
                 ScanningView(capture: viewModel.capture, onFinish: viewModel.finishScanning)
             case .processing:
@@ -183,6 +204,7 @@ struct FootScanFlowView: View {
 
 private struct IntroView: View {
     let onStart: () -> Void
+    let onTestMesh: () -> Void
 
     var body: some View {
         VStack(spacing: 20) {
@@ -206,12 +228,17 @@ private struct IntroView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.horizontal, 32)
+
+            Button("Skip scanning — test with a sample mesh", action: onTestMesh)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 }
 
 private struct UnsupportedDeviceView: View {
     let onDismiss: () -> Void
+    let onTestMesh: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
@@ -225,7 +252,14 @@ private struct UnsupportedDeviceView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
+
+            Button("Test the rest of the pipeline with a sample mesh", action: onTestMesh)
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 4)
+
             Button("OK", action: onDismiss)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 }

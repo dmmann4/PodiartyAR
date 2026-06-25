@@ -92,16 +92,32 @@ private struct FootModelViewer: UIViewRepresentable {
         }
     }
 
-    /// Pan rotates the model around its vertical axis, pinch scales it. Both act
-    /// directly on the entity transform since there's no AR world to move a camera
-    /// through in non-AR mode.
+    /// Arcball rotation on both axes + pinch-to-scale.
+    ///
+    /// How the arcball works:
+    ///   • On `.began` we snapshot the entity's current orientation quaternion.
+    ///   • On each `.changed` tick we read the *total* translation since the gesture
+    ///     began (not the delta since last tick — that would accumulate floating-point
+    ///     drift on every frame).
+    ///   • We convert horizontal drag → a rotation around the world-up Y axis, and
+    ///     vertical drag → a rotation around the world-right X axis, using the total
+    ///     translation scaled to radians.
+    ///   • The two quaternions are composed (yaw first, then pitch) and multiplied
+    ///     onto the snapshot orientation so the result is always relative to where the
+    ///     gesture started, not to the previous frame's value.
+    ///
+    /// This gives natural "tumble" behaviour in all directions with no gimbal lock
+    /// and no orientation drift across multiple drag gestures.
     final class Coordinator {
         var modelEntity: ModelEntity?
         private var startRotation: simd_quatf = simd_quatf(angle: 0, axis: [0, 1, 0])
         private var startScale: Float = 1
 
+        /// Sensitivity in radians per point of drag.
+        private let rotationSensitivity: Float = 0.007
+
         func attachGestures(to arView: ARView) {
-            let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+            let pan   = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
             let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
             arView.addGestureRecognizer(pan)
             arView.addGestureRecognizer(pinch)
@@ -109,14 +125,31 @@ private struct FootModelViewer: UIViewRepresentable {
 
         @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
             guard let entity = modelEntity else { return }
+
             switch gesture.state {
             case .began:
+                // Snapshot the orientation at the start of this gesture. All
+                // subsequent .changed ticks compose onto this baseline so there
+                // is no per-frame accumulation error.
                 startRotation = entity.orientation
+
             case .changed:
-                let translation = gesture.translation(in: gesture.view)
-                let angle = Float(translation.x) * 0.005
-                let spin = simd_quatf(angle: angle, axis: [0, 1, 0])
-                entity.orientation = spin * startRotation
+                // Total translation from the gesture's origin (not frame delta).
+                let t = gesture.translation(in: gesture.view)
+
+                // Horizontal drag → spin around world Y (yaw).
+                let yawAngle   = Float(t.x) * rotationSensitivity
+                let yaw        = simd_quatf(angle: yawAngle,  axis: [0, 1, 0])
+
+                // Vertical drag → tilt around world X (pitch).
+                // Negative because dragging up (negative t.y in UIKit) should
+                // tilt the top of the model toward the viewer.
+                let pitchAngle = Float(-t.y) * rotationSensitivity
+                let pitch      = simd_quatf(angle: pitchAngle, axis: [1, 0, 0])
+
+                // Apply yaw first, then pitch, onto the snapshotted orientation.
+                entity.orientation = simd_normalize(pitch * yaw * startRotation)
+
             default:
                 break
             }
@@ -124,6 +157,7 @@ private struct FootModelViewer: UIViewRepresentable {
 
         @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
             guard let entity = modelEntity else { return }
+
             switch gesture.state {
             case .began:
                 startScale = entity.scale.x

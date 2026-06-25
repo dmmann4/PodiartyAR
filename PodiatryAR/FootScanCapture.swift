@@ -19,11 +19,6 @@ final class FootScanCapture: NSObject, ObservableObject, ARSessionDelegate {
     /// new geometry is observed — we keep the most recent version of each.
     private var meshAnchors: [UUID: ARMeshAnchor] = [:]
 
-    /// World-space bounding box we expect the foot to occupy, used only to estimate
-    /// scan coverage for UI feedback (not for filtering — that happens in
-    /// FootMeshProcessor).
-    private var expectedBounds: (min: SIMD3<Float>, max: SIMD3<Float>)?
-
     static var isSupported: Bool {
         ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification)
     }
@@ -44,7 +39,7 @@ final class FootScanCapture: NSObject, ObservableObject, ARSessionDelegate {
 
         meshAnchors.removeAll()
         isScanning = true
-        statusMessage = "Slowly circle the foot, keeping it centered"
+        statusMessage = "Place foot inside the oval, then slowly circle around it"
     }
 
     func stop() {
@@ -77,20 +72,34 @@ final class FootScanCapture: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
-    /// Rough coverage estimate: fraction of a 1-meter cube around the camera's
-    /// current focus point that has been observed. Good enough to drive a progress
-    /// indicator; not used for any geometric filtering.
+    /// Vertex-count-based coverage estimate with coaching messages that change
+    /// as the user progresses through the scan.
+    ///
+    /// Thresholds are tuned empirically for a typical single-foot LiDAR scan
+    /// at default ARKit mesh resolution (~25 k vertices for good coverage).
+    /// Adjust after profiling real scans on your target devices.
     private func updateCoverageEstimate() {
         let totalVertices = meshAnchors.values.reduce(0) { $0 + $1.geometry.vertices.count }
-        // Heuristic: a reasonably complete single-foot scan tends to land in the
-        // 15k-40k vertex range at default LiDAR resolution. Tune against real scans.
-        coveragePercent = min(1.0, Double(totalVertices) / 25_000.0)
-        if coveragePercent > 0.85 {
-            statusMessage = "Good coverage — you can stop scanning"
+        let raw = min(1.0, Double(totalVertices) / 25_000.0)
+
+        // Smooth the progress bar so it doesn't jump around as anchors update
+        coveragePercent = coveragePercent + (raw - coveragePercent) * 0.4
+
+        switch coveragePercent {
+        case ..<0.15:
+            statusMessage = "Place the foot inside the oval and move closer"
+        case 0.15..<0.35:
+            statusMessage = "Good start — slowly circle around the top of the foot"
+        case 0.35..<0.60:
+            statusMessage = "Keep going — tilt down to capture the sides and sole"
+        case 0.60..<0.85:
+            statusMessage = "Almost there — scan the arch and heel area"
+        default:
+            statusMessage = "Great coverage — tap Done when ready"
         }
     }
 
-    /// Snapshot of the currently accumulated mesh anchors, transformed into world space.
+    /// Snapshot of the currently accumulated mesh anchors.
     /// Hand this to FootMeshProcessor once scanning stops.
     func currentMeshAnchors() -> [ARMeshAnchor] {
         Array(meshAnchors.values)

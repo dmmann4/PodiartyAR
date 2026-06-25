@@ -53,16 +53,35 @@ extension ARMeshGeometry {
         }
         return result
     }
+
+    /// Returns ARKit's surface classification for a given face index.
+    /// The classification buffer stores one UInt8 per face.
+    func classificationOf(faceAt faceIndex: Int) -> ARMeshClassification {
+        guard let classificationData = classification else { return .none }
+        let classificationPtr = classificationData.buffer.contents()
+            .advanced(by: classificationData.offset + faceIndex * classificationData.stride)
+        let rawValue = classificationPtr.assumingMemoryBound(to: UInt8.self).pointee
+        return ARMeshClassification(rawValue: Int(rawValue)) ?? .none
+    }
 }
 
 enum FootMeshProcessor {
 
     // MARK: - Fusion
 
-    /// Combines every ARMeshAnchor into a single world-space mesh. ARMeshAnchors
-    /// overlap where ARKit re-observed the same surface, so this is a simple
-    /// concatenation rather than true mesh stitching — FootMeshProcessor.smooth
-    /// and a later decimation pass clean up the seams.
+    /// ARKit mesh classification labels to exclude when fusing anchors. These are
+    /// structural environment geometry — never foot. "floor" is kept so
+    /// FootMeshProcessor.isolateFoot can use it to estimate the ground plane;
+    /// it gets stripped in Stage 1 of that function.
+    private static let excludedClassifications: Set<ARMeshClassification> = [
+        .wall, .ceiling, .door, .seat, .table, .window
+    ]
+
+    /// Combines every ARMeshAnchor into a single world-space mesh, skipping faces
+    /// that ARKit has classified as structural environment (walls, ceiling, etc.).
+    /// ARMeshAnchors overlap where ARKit re-observed the same surface, so this is a
+    /// simple concatenation rather than true mesh stitching — smooth and decimate
+    /// later to clean up seams.
     static func fuse(_ anchors: [ARMeshAnchor]) -> FootMesh {
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
@@ -73,22 +92,37 @@ enum FootMeshProcessor {
             let transform = anchor.transform
             let baseIndex = UInt32(vertices.count)
 
+            // Build a local vertex array for this anchor first (we only emit
+            // vertices actually referenced by kept faces, but building the full
+            // local array up-front keeps the index arithmetic simple).
+            var localVertices: [SIMD3<Float>] = []
+            var localNormals:  [SIMD3<Float>] = []
+            localVertices.reserveCapacity(geometry.vertices.count)
+            localNormals.reserveCapacity(geometry.vertices.count)
+
             for i in 0..<geometry.vertices.count {
                 let local = geometry.vertex(at: UInt32(i))
                 let world = transform * SIMD4<Float>(local, 1)
-                vertices.append(SIMD3(world.x, world.y, world.z))
+                localVertices.append(SIMD3(world.x, world.y, world.z))
 
                 let n = geometry.normalValue(at: UInt32(i))
                 let worldNormal = simd_normalize((transform * SIMD4<Float>(n, 0)).xyz)
-                normals.append(worldNormal)
+                localNormals.append(worldNormal)
             }
 
+            // Emit only faces whose ARKit classification is not excluded.
             for f in 0..<geometry.faces.count {
+                let classification = geometry.classificationOf(faceAt: f)
+                if excludedClassifications.contains(classification) { continue }
+
                 let faceVertexIndices = geometry.vertexIndices(ofFaceAt: f)
                 for vertexIndex in faceVertexIndices {
                     indices.append(baseIndex + vertexIndex)
                 }
             }
+
+            vertices.append(contentsOf: localVertices)
+            normals.append(contentsOf: localNormals)
         }
 
         return FootMesh(vertices: vertices, normals: normals, triangleIndices: indices)
@@ -96,23 +130,59 @@ enum FootMeshProcessor {
 
     // MARK: - Foot isolation
 
-    /// Removes the floor and anything outside a generous bounding volume around the
-    /// densest cluster of geometry (a stand-in for a learned segmenter — see the
-    /// README for when to upgrade this to ML).
-    static func isolateFoot(_ mesh: FootMesh, floorY: Float, floorMargin: Float = 0.015) -> FootMesh {
-        var keptVertices: [SIMD3<Float>] = []
-        var keptNormals: [SIMD3<Float>] = []
-        var remap: [Int: UInt32] = [:]
+    /// Maximum physical dimensions we'd ever expect for a human foot (in metres).
+    /// Anything larger is almost certainly surrounding environment, not foot geometry.
+    private static let maxFootLength: Float = 0.36   // ~US men's size 18
+    private static let maxFootWidth:  Float = 0.16
+    private static let maxFootHeight: Float = 0.12   // top of ankle
 
-        for (i, v) in mesh.vertices.enumerated() {
-            if v.y > floorY + floorMargin {
-                remap[i] = UInt32(keptVertices.count)
-                keptVertices.append(v)
-                keptNormals.append(mesh.normals[i])
-            }
+    /// Multi-stage foot isolation:
+    ///   1. Strip the floor (and anything below it).
+    ///   2. Clamp to a physically plausible foot bounding volume centred on the
+    ///      densest cluster of geometry — eliminates walls, furniture, and anything
+    ///      more than ~36 cm away from the foot's centre of mass.
+    ///   3. Extract the largest connected component — drops isolated noise patches
+    ///      (stray geometry, shoe edges) that survive the bounding-box filter.
+    static func isolateFoot(_ mesh: FootMesh, floorY: Float, floorMargin: Float = 0.015) -> FootMesh {
+
+        // ── Stage 1: floor removal ────────────────────────────────────────────
+        let aboveFloor = filterVertices(mesh) { $0.y > floorY + floorMargin }
+        guard !aboveFloor.vertices.isEmpty else { return aboveFloor }
+
+        // ── Stage 2: bounding-volume clamp ───────────────────────────────────
+        // Centroid of what's above the floor is a robust proxy for foot centre;
+        // anything outside maxFoot* in any axis is environment, not foot.
+        let centroid = aboveFloor.vertices.reduce(SIMD3<Float>.zero, +)
+            / Float(aboveFloor.vertices.count)
+
+        let halfL = maxFootLength / 2
+        let halfW = maxFootWidth  / 2
+
+        let bounded = filterVertices(aboveFloor) { v in
+            abs(v.x - centroid.x) < halfW   &&
+            abs(v.z - centroid.z) < halfL   &&
+            (v.y - floorY)        < maxFootHeight
+        }
+        guard !bounded.vertices.isEmpty else { return bounded }
+
+        // ── Stage 3: largest connected component ──────────────────────────────
+        return largestConnectedComponent(bounded)
+    }
+
+    /// Keeps only vertices/triangles matching `predicate`, remapping indices.
+    private static func filterVertices(_ mesh: FootMesh,
+                                       _ predicate: (SIMD3<Float>) -> Bool) -> FootMesh {
+        var keptVertices: [SIMD3<Float>] = []
+        var keptNormals:  [SIMD3<Float>] = []
+        var remap = [Int: UInt32]()
+
+        for (i, v) in mesh.vertices.enumerated() where predicate(v) {
+            remap[i] = UInt32(keptVertices.count)
+            keptVertices.append(v)
+            keptNormals.append(mesh.normals[i])
         }
 
-        var keptIndices: [UInt32] = []
+        var keptIndices = [UInt32]()
         keptIndices.reserveCapacity(mesh.triangleIndices.count)
         var i = 0
         while i < mesh.triangleIndices.count {
@@ -124,7 +194,74 @@ enum FootMeshProcessor {
             }
             i += 3
         }
+        return FootMesh(vertices: keptVertices, normals: keptNormals, triangleIndices: keptIndices)
+    }
 
+    /// Union-Find (path-compressed) connected-component extraction.
+    /// Vertices are "connected" when they share a triangle edge.  We keep only
+    /// the component with the most vertices — that's almost always the foot.
+    private static func largestConnectedComponent(_ mesh: FootMesh) -> FootMesh {
+        let n = mesh.vertices.count
+        guard n > 0 else { return mesh }
+
+        // Union-Find with path compression + rank
+        var parent = Array(0..<n)
+        var rank   = [Int](repeating: 0, count: n)
+
+        func find(_ x: Int) -> Int {
+            var x = x
+            while parent[x] != x { parent[x] = parent[parent[x]]; x = parent[x] }
+            return x
+        }
+        func union(_ a: Int, _ b: Int) {
+            let ra = find(a), rb = find(b)
+            guard ra != rb else { return }
+            if rank[ra] < rank[rb] { parent[ra] = rb }
+            else if rank[ra] > rank[rb] { parent[rb] = ra }
+            else { parent[rb] = ra; rank[ra] += 1 }
+        }
+
+        // Build adjacency from triangle edges
+        var i = 0
+        while i < mesh.triangleIndices.count {
+            let a = Int(mesh.triangleIndices[i])
+            let b = Int(mesh.triangleIndices[i + 1])
+            let c = Int(mesh.triangleIndices[i + 2])
+            union(a, b); union(b, c); union(a, c)
+            i += 3
+        }
+
+        // Find component sizes and pick the largest
+        var sizes = [Int: Int]()
+        for v in 0..<n { sizes[find(v), default: 0] += 1 }
+        guard let largestRoot = sizes.max(by: { $0.value < $1.value })?.key else {
+            return mesh
+        }
+
+        // Filter to the winning component.
+        // We can't use a closure here because `find` mutates `parent` (path compression);
+        // instead we build the remap table directly with an index loop.
+        var remap = [Int: UInt32]()
+        var keptVertices = [SIMD3<Float>]()
+        var keptNormals  = [SIMD3<Float>]()
+
+        for v in 0..<n where find(v) == largestRoot {
+            remap[v] = UInt32(keptVertices.count)
+            keptVertices.append(mesh.vertices[v])
+            keptNormals.append(mesh.normals[v])
+        }
+
+        var keptIndices = [UInt32]()
+        var j = 0
+        while j < mesh.triangleIndices.count {
+            let a = Int(mesh.triangleIndices[j])
+            let b = Int(mesh.triangleIndices[j + 1])
+            let c = Int(mesh.triangleIndices[j + 2])
+            if let ra = remap[a], let rb = remap[b], let rc = remap[c] {
+                keptIndices.append(contentsOf: [ra, rb, rc])
+            }
+            j += 3
+        }
         return FootMesh(vertices: keptVertices, normals: keptNormals, triangleIndices: keptIndices)
     }
 
