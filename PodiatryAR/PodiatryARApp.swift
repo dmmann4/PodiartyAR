@@ -13,7 +13,7 @@ struct PodiatryARApp: App {
     
     var body: some Scene {
         WindowGroup {
-            FootScanFlowView()
+            ViewControllerWrapper()
         }
     }
 }

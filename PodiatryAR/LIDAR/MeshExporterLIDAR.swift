@@ -5,7 +5,7 @@ enum MeshExportError: Error {
     case assetExportFailed
 }
 
-enum MeshExporter {
+enum MeshExporterLIDAR {
 
     // MARK: - USDZ / OBJ via Model I/O
 

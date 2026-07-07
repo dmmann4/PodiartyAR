@@ -93,9 +93,9 @@ final class FootScanFlowViewModel: ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             do {
                 switch format {
-                case .usdz: try MeshExporter.exportUSDZ(mesh, to: url)
-                case .obj: try MeshExporter.exportOBJ(mesh, to: url)
-                case .stl: try MeshExporter.exportSTL(mesh, to: url)
+                case .usdz: try MeshExporterLIDAR.exportUSDZ(mesh, to: url)
+                case .obj: try MeshExporterLIDAR.exportOBJ(mesh, to: url)
+                case .stl: try MeshExporterLIDAR.exportSTL(mesh, to: url)
                 }
                 DispatchQueue.main.async { self?.exportedFileURL = url }
             } catch {
