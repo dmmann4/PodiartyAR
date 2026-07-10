@@ -13,7 +13,8 @@ struct PodiatryARApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ViewControllerWrapper()
+            InitialStoryboardView()
+                .edgesIgnoringSafeArea(.all)
         }
     }
 }

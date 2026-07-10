@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A58A06742FFD6B8600C2862C /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06732FFD6B8600C2862C /* ZipArchive */; };
+		A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06762FFD6C9200C2862C /* StandardCyborgFusion */; };
+		A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A58A067B2FFD6D3D00C2862C /* Metal.framework */; };
+		A58A067E2FFD6D4D00C2862C /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A58A067D2FFD6D4D00C2862C /* SceneKit.framework */; };
+		A58A06802FFD6E7D00C2862C /* StandardCyborgFusion in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A58A06762FFD6C9200C2862C /* StandardCyborgFusion */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A511C5572FE630A600BB83B7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -23,10 +31,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A58A06812FFD6E7D00C2862C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A58A06802FFD6E7D00C2862C /* StandardCyborgFusion in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		A511C5472FE630A300BB83B7 /* PodiatryAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodiatryAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A511C5562FE630A600BB83B7 /* PodiatryARTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PodiatryARTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A511C5602FE630A600BB83B7 /* PodiatryARUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PodiatryARUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A58A067B2FFD6D3D00C2862C /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		A58A067D2FFD6D4D00C2862C /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +76,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58A06742FFD6B8600C2862C /* ZipArchive in Frameworks */,
+				A58A067E2FFD6D4D00C2862C /* SceneKit.framework in Frameworks */,
+				A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */,
+				A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +106,7 @@
 				A511C5492FE630A300BB83B7 /* PodiatryAR */,
 				A511C5592FE630A600BB83B7 /* PodiatryARTests */,
 				A511C5632FE630A600BB83B7 /* PodiatryARUITests */,
+				A58A067A2FFD6D3D00C2862C /* Frameworks */,
 				A511C5482FE630A300BB83B7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,6 +121,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		A58A067A2FFD6D3D00C2862C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A58A067D2FFD6D4D00C2862C /* SceneKit.framework */,
+				A58A067B2FFD6D3D00C2862C /* Metal.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -102,6 +140,7 @@
 				A511C5432FE630A300BB83B7 /* Sources */,
 				A511C5442FE630A300BB83B7 /* Frameworks */,
 				A511C5452FE630A300BB83B7 /* Resources */,
+				A58A06812FFD6E7D00C2862C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -112,6 +151,8 @@
 			);
 			name = PodiatryAR;
 			packageProductDependencies = (
+				A58A06732FFD6B8600C2862C /* ZipArchive */,
+				A58A06762FFD6C9200C2862C /* StandardCyborgFusion */,
 			);
 			productName = PodiatryAR;
 			productReference = A511C5472FE630A300BB83B7 /* PodiatryAR.app */;
@@ -195,6 +236,10 @@
 			);
 			mainGroup = A511C53E2FE630A300BB83B7;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */,
+				A58A06752FFD6C9200C2862C /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A511C5482FE630A300BB83B7 /* Products */;
 			projectDirPath = "";
@@ -417,6 +462,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "PodiatryAR/TrueDepth/TrueDepthFusion/TrueDepthFusion-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -450,6 +496,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "PodiatryAR/TrueDepth/TrueDepthFusion/TrueDepthFusion-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -580,6 +627,36 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A58A06752FFD6C9200C2862C /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../StandardCyborgCocoa;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ZipArchive/ZipArchive.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A58A06732FFD6B8600C2862C /* ZipArchive */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */;
+			productName = ZipArchive;
+		};
+		A58A06762FFD6C9200C2862C /* StandardCyborgFusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StandardCyborgFusion;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A511C53F2FE630A300BB83B7 /* Project object */;
 }

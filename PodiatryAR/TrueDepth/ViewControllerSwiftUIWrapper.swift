@@ -3,26 +3,11 @@
 
 import SwiftUI
 
-struct ViewControllerWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> ViewController {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        // Assumes ViewController is the initial view controller in Main.storyboard,
-        // or update the identifier as needed.
-        guard let vc = storyboard.instantiateInitialViewController() as? ViewController else {
-            fatalError("Failed to instantiate ViewController from Main.storyboard")
-        }
-        return vc
+struct InitialStoryboardView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil) 
+        return storyboard.instantiateInitialViewController()!
     }
     
-    func updateUIViewController(_ uiViewController: ViewController, context: Context) {
-        // No-op: Add data binding logic here if needed for SwiftUI interop
-    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
-
-// Usage Example in SwiftUI:
-// struct ContentView: View {
-//     var body: some View {
-//         ViewControllerWrapper()
-//             .edgesIgnoringSafeArea(.all)
-//     }
-// }
