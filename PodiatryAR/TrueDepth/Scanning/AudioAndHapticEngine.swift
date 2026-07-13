@@ -1,10 +1,3 @@
-//
-//  AudioAndHapticEngine.swift
-//  TrueDepthFusion
-//
-//  Created by Aaron Thompson on 8/22/18.
-//
-
 import AudioToolbox
 import Foundation
 import UIKit

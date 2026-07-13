@@ -1,10 +1,3 @@
-//
-//  SCPointCloudRenderer.metal
-//  StandardCyborgFusion
-//
-//  Created by Aaron Thompson on 7/25/18.
-//
-
 #include <metal_stdlib>
 using namespace metal;
 

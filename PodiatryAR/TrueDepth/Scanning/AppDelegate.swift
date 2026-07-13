@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  TrueDepthFusion
-//
-//  Created by Aaron Thompson on 8/12/18.
-//
-
 import ARKit
 import UIKit
 import Combine

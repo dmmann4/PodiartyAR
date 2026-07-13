@@ -3,42 +3,11 @@
     <device id="retina5_9" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Initial-->
-        <scene sceneID="NSM-Ze-h3Z">
-            <objects>
-                <viewController title="Home" id="d18-9B-5GY" userLabel="Initial" customClass="LandingViewController" customModule="PodiatryAR" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="bhg-ug-afR">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TEi-yu-aZh">
-                                <rect key="frame" x="139" y="114.33333333333326" width="97" height="489"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="QxL-Yf-Kqx"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Home" id="mWi-X6-7AU"/>
-                    <connections>
-                        <segue destination="RyE-1f-wRL" kind="presentation" identifier="ScanningViewController" id="vZh-bL-Dkg"/>
-                        <segue destination="AUl-IV-Dey" kind="presentation" identifier="BPLYScanningViewController" id="Khi-Ob-sdF"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xxR-sq-Spo" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="7.2000000000000002" y="99.01477832512316"/>
-        </scene>
         <!--Scanning-->
         <scene sceneID="dFW-IC-xb1">
             <objects>
@@ -48,41 +17,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="4ta-f5-jp7">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="744"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Zo9-zD-IeA">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p1j-k4-SC1" userLabel="Slider Container">
-                                        <rect key="frame" x="0.0" y="62" width="375" height="632"/>
-                                        <subviews>
-                                            <slider opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="9wm-xD-NaY" userLabel="Sample count slider">
-                                                <rect key="frame" x="20" y="299" width="283" height="34"/>
-                                                <connections>
-                                                    <action selector="scanDurationChanged:" destination="RyE-1f-wRL" eventType="valueChanged" id="fVv-Zs-koE"/>
-                                                </connections>
-                                            </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5 sec" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7i6-XB-0db">
-                                                <rect key="frame" x="311" y="0.0" width="44" height="632"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="44" id="ZDi-E1-OhO"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="7i6-XB-0db" secondAttribute="trailing" constant="20" id="0S9-yq-Gwk"/>
-                                            <constraint firstItem="7i6-XB-0db" firstAttribute="top" secondItem="p1j-k4-SC1" secondAttribute="top" id="Dbw-m7-DBe"/>
-                                            <constraint firstItem="7i6-XB-0db" firstAttribute="leading" secondItem="9wm-xD-NaY" secondAttribute="trailing" constant="8" id="I9j-9G-sEk"/>
-                                            <constraint firstItem="7i6-XB-0db" firstAttribute="centerY" secondItem="9wm-xD-NaY" secondAttribute="centerY" id="iJe-pY-cce"/>
-                                            <constraint firstItem="9wm-xD-NaY" firstAttribute="leading" secondItem="p1j-k4-SC1" secondAttribute="leading" constant="20" id="imr-d2-cgK"/>
-                                            <constraint firstAttribute="bottom" secondItem="7i6-XB-0db" secondAttribute="bottom" id="vFc-cF-qQF"/>
-                                        </constraints>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="660"/>
+                                        <color key="backgroundColor" name="SaveAction"/>
                                     </view>
                                     <view contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="hMU-LB-Ioo" userLabel="Bottom Container">
-                                        <rect key="frame" x="0.0" y="706" width="375" height="72"/>
+                                        <rect key="frame" x="0.0" y="672" width="375" height="72"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DrO-92-FMv" userLabel="Camera Button">
                                                 <rect key="frame" x="151.66666666666666" y="0.0" width="72" height="72"/>
@@ -255,12 +197,11 @@ Cg
                             <constraint firstItem="4ta-f5-jp7" firstAttribute="leading" secondItem="aAn-Ox-npb" secondAttribute="leading" id="xYy-Se-WA7"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="G5C-Av-JTJ"/>
                     <connections>
                         <outlet property="countdownLabel" destination="xC9-jh-g1U" id="Fv4-0u-eiP"/>
                         <outlet property="elapsedDurationLabel" destination="77e-GW-7q3" id="p6M-G6-73H"/>
                         <outlet property="metalContainerView" destination="Zo9-zD-IeA" id="hgb-UH-L9r"/>
-                        <outlet property="scanDurationContainerView" destination="p1j-k4-SC1" id="ZEu-uM-OyX"/>
-                        <outlet property="scanDurationLabel" destination="7i6-XB-0db" id="Mcq-e1-cet"/>
                         <outlet property="scanFailedLabel" destination="zcG-p6-vmb" id="Ldn-S1-pxc"/>
                         <outlet property="showScansButton" destination="lVE-TE-u6F" id="jhz-n8-SgN"/>
                         <outlet property="shutterButton" destination="DrO-92-FMv" id="9zb-KA-pZb"/>
@@ -268,7 +209,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HHM-ny-8by" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="998" y="-219"/>
+            <point key="canvasLocation" x="592.79999999999995" y="-104.1871921182266"/>
         </scene>
         <!--Scan Preview-->
         <scene sceneID="5vk-wV-z3C">
@@ -496,12 +437,12 @@ Cg
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="d18-9B-5GY" kind="relationship" relationship="rootViewController" id="trL-qL-2hK"/>
+                        <segue destination="RyE-1f-wRL" kind="relationship" relationship="rootViewController" id="laS-zx-8N6"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ami-4n-qkS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-932" y="99.400299850074973"/>
+            <point key="canvasLocation" x="-553" y="-115"/>
         </scene>
         <!--Binary PLY Scanning-->
         <scene sceneID="0zq-9O-dpE">
@@ -512,13 +453,13 @@ Cg
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="Cqj-ig-PkM">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="744"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="NpG-8Y-FAK">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="16"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A6s-lV-LGz" userLabel="Slider Container">
-                                        <rect key="frame" x="0.0" y="62" width="375" height="632"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="632"/>
                                         <subviews>
                                             <slider opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="1" maxValue="30" translatesAutoresizingMaskIntoConstraints="NO" id="drr-qy-2gR" userLabel="Sample count slider">
                                                 <rect key="frame" x="20" y="299" width="283" height="34"/>
@@ -546,7 +487,7 @@ Cg
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="b1A-Fk-Met" userLabel="Bottom Container">
-                                        <rect key="frame" x="0.0" y="706" width="375" height="72"/>
+                                        <rect key="frame" x="0.0" y="672" width="375" height="72"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vdc-f3-bWC" userLabel="Camera Button">
                                                 <rect key="frame" x="151.66666666666666" y="0.0" width="72" height="72"/>
@@ -617,6 +558,7 @@ Cg
                             <constraint firstItem="OlR-vm-7qO" firstAttribute="centerY" secondItem="sdj-cX-WDt" secondAttribute="centerY" id="hil-X7-bOE"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="p3r-bC-FDM"/>
                     <connections>
                         <outlet property="countdownLabel" destination="OlR-vm-7qO" id="r3w-XF-9qz"/>
                         <outlet property="elapsedDurationLabel" destination="PEd-lt-EGf" id="qaw-eW-Fpl"/>
@@ -628,18 +570,18 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wfa-CK-w3b" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="998" y="494"/>
+            <point key="canvasLocation" x="967" y="777"/>
         </scene>
     </scenes>
     <resources>
         <image name="CameraButton" width="72" height="72"/>
         <image name="CameraButtonSelected" width="72" height="72"/>
         <image name="UIButtonBarAction" width="19" height="27"/>
+        <namedColor name="SaveAction">
+            <color red="0.60000002384185791" green="1" blue="0.75999999046325684" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>

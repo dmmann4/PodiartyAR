@@ -1,10 +1,3 @@
-//
-//  CameraManager.swift
-//  TrueDepthFusion
-//
-//  Created by Aaron Thompson on 10/15/18.
-//
-
 import AVFoundation
 import Foundation
 

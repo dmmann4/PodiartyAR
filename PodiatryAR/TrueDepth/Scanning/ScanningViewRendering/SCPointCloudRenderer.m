@@ -1,9 +1,3 @@
-//
-//  SCPointCloudRenderer.m
-//  TrueDepthFusion
-//
-//  Created by Aaron Thompson on 9/23/18.
-//
 
 #import <AVFoundation/AVFoundation.h>
 #import <MetalKit/MetalKit.h>
@@ -211,12 +205,12 @@ typedef struct {
     float py = 2.0f * fy / referenceSize * imageScale[1];
     float pz = (far + near) / (near - far);
     float pw = 2.0f * far * near / (near - far);
-
+    
     simd_float4x4 projection = {
-        .columns[0] = {    px, 0.0f, 0.0f,  0.0f },
-        .columns[1] = {  0.0f,   py, 0.0f,  0.0f },
-        .columns[2] = {  0.0f, 0.0f,   pz, -1.0f },
-        .columns[3] = {  0.0f, 0.0f,   pw,  0.0f },
+        .columns[0] = {  0.0f,    py, 0.0f,  0.0f },
+        .columns[1] = {   -px,  0.0f, 0.0f,  0.0f },
+        .columns[2] = {  0.0f,  0.0f,   pz, -1.0f },
+        .columns[3] = {  0.0f,  0.0f,   pw,  0.0f },
     };
 
     simd_float4x4 viewInverse = matrix_invert(viewMatrix);

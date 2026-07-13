@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ScanType (Compression)
 - (NSURL *)writeCompressedPLY;
 - (NSURL * _Nullable)writeUSDZ;
+- (NSURL * _Nullable)writeSTL;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A55DC9C73003B96A0042DB97 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A55DC9C63003B96A0042DB97 /* ZIPFoundation */; };
 		A58A06742FFD6B8600C2862C /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06732FFD6B8600C2862C /* ZipArchive */; };
 		A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06762FFD6C9200C2862C /* StandardCyborgFusion */; };
 		A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A58A067B2FFD6D3D00C2862C /* Metal.framework */; };
@@ -80,6 +81,7 @@
 				A58A067E2FFD6D4D00C2862C /* SceneKit.framework in Frameworks */,
 				A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */,
 				A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */,
+				A55DC9C73003B96A0042DB97 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +155,7 @@
 			packageProductDependencies = (
 				A58A06732FFD6B8600C2862C /* ZipArchive */,
 				A58A06762FFD6C9200C2862C /* StandardCyborgFusion */,
+				A55DC9C63003B96A0042DB97 /* ZIPFoundation */,
 			);
 			productName = PodiatryAR;
 			productReference = A511C5472FE630A300BB83B7 /* PodiatryAR.app */;
@@ -239,6 +242,7 @@
 			packageReferences = (
 				A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */,
 				A58A06752FFD6C9200C2862C /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */,
+				A55DC9C53003B96A0042DB97 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A511C5482FE630A300BB83B7 /* Products */;
@@ -462,7 +466,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "PodiatryAR/TrueDepth/TrueDepthFusion/TrueDepthFusion-Bridging-Header.h";
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "PodiatryAR/TrueDepth/Scanning/TrueDepthFusion-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -496,7 +500,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "PodiatryAR/TrueDepth/TrueDepthFusion/TrueDepthFusion-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "PodiatryAR/TrueDepth/Scanning/TrueDepthFusion-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -636,6 +640,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A55DC9C53003B96A0042DB97 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.20;
+			};
+		};
 		A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ZipArchive/ZipArchive.git";
@@ -647,6 +659,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A55DC9C63003B96A0042DB97 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A55DC9C53003B96A0042DB97 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
 		A58A06732FFD6B8600C2862C /* ZipArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */;

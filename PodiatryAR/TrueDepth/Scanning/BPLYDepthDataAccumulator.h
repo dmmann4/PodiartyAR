@@ -1,10 +1,3 @@
-//
-//  BPLYDepthDataAccumulator.h
-//  DepthRenderer
-//
-//  Created by Aaron Thompson on 7/5/18.
-//
-
 #import <AVKit/AVKit.h>
 #import <CoreMotion/CoreMotion.h>
 #import <CoreVideo/CoreVideo.h>

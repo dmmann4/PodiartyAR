@@ -13,8 +13,8 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
     // MARK: - Outlets and Actions
     
     @IBOutlet private weak var metalContainerView: UIView!
-    @IBOutlet private weak var scanDurationContainerView: UIView!
-    @IBOutlet private weak var scanDurationLabel: UILabel!
+//    @IBOutlet private weak var scanDurationContainerView: UIView!
+//    @IBOutlet private weak var scanDurationLabel: UILabel!
     @IBOutlet private weak var showScansButton: UIButton!
     @IBOutlet private weak var elapsedDurationLabel: UILabel!
     @IBOutlet private weak var shutterButton: UIButton!
@@ -31,11 +31,12 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
         if _scanning {
             AudioAndHapticEngine.shared.scanningFinished()
             _stopScanning(reason: .finished)
-        } else if _countdownSeconds > 0 {
-            AudioAndHapticEngine.shared.scanningCanceled()
-            _cancelCountdown()
+//        } else if _countdownSeconds > 0 {
+//            AudioAndHapticEngine.shared.scanningCanceled()
+//            _cancelCountdown()
         } else {
-            _startCountdown { self._startScanning() }
+//            _startCountdown { self._startScanning() }
+            self._startScanning()
         }
     }
     
@@ -114,7 +115,7 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
         
         let latestScan = scans.first
         showScansButton.setBackgroundImage(latestScan?.thumbnail, for: UIControl.State.normal)
-        scanDurationContainerView.isHidden = _tapToStartStop
+//        scanDurationContainerView.isHidden = _tapToStartStop
         
         _cameraManager.startSession { result in
             switch result {
@@ -380,7 +381,7 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
         _ = self.view
         
         elapsedDurationLabel.isHidden = !_scanning
-        scanDurationLabel.text = "\(_scanDurationSeconds) sec"
+//        scanDurationLabel.text = "\(_scanDurationSeconds) sec"
         elapsedDurationLabel.text = "\(_elapsedSeconds + 1)"
         countdownLabel.isHidden = _countdownSeconds == 0
         countdownLabel.text = "\(_countdownSeconds)"
@@ -401,22 +402,22 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
     }
     
     private func _iterateCountdown(_ completion: @escaping () -> Void) {
-        AudioAndHapticEngine.shared.countdownCountedDown()
-        
-        if _countdownSeconds == 0 {
-            completion()
-            return
-        }
-        
-        countdownLabel.alpha = 1
-        UIView.animate(withDuration: 1.0, animations: {
-            self.countdownLabel.alpha = 0
-        }, completion: { finished in
-            if finished && self._countdownSeconds > 0 {
-                self._countdownSeconds -= 1
-                self._iterateCountdown(completion)
-            }
-        })
+//        AudioAndHapticEngine.shared.countdownCountedDown()
+//        
+//        if _countdownSeconds == 0 {
+//            completion()
+//            return
+//        }
+//        
+//        countdownLabel.alpha = 1
+//        UIView.animate(withDuration: 1.0, animations: {
+//            self.countdownLabel.alpha = 0
+//        }, completion: { finished in
+//            if finished && self._countdownSeconds > 0 {
+//                self._countdownSeconds -= 1
+//                self._iterateCountdown(completion)
+//            }
+//        })
     }
     
     private let _failedScanShowPreviewMinFrameCount = 50
@@ -519,4 +520,16 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
 // Helper function inserted by Swift 4.2 migrator.
 private func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
     return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
+}
+
+extension UserDefaults {
+    
+    func bool(forKey key: String, defaultValue: Bool) -> Bool {
+        if let defaultNumber = object(forKey: key) as? NSNumber {
+            return defaultNumber.boolValue
+        } else {
+            return defaultValue
+        }
+    }
+    
 }

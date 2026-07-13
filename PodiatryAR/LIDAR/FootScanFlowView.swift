@@ -324,21 +324,11 @@ private struct ReviewView: View {
                 }
                 .sheet(isPresented: $isExporting, onDismiss: { viewModel.exportedFileURL = nil }) {
                     if let url = viewModel.exportedFileURL {
-                        ShareSheet(activityItems: [url])
+                        ShareSheet(items: [url])
                     } else {
                         ProgressView("Preparing file…")
                     }
                 }
         }
     }
-}
-
-private struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

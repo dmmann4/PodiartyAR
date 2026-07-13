@@ -184,5 +184,14 @@
     return success ? USDZURL : nil;
 }
 
+- (NSURL *)writeSTL
+{
+    NSURL *STLURL = [[NSURL fileURLWithPath:NSTemporaryDirectory()] URLByAppendingPathComponent:@"Scan.stl"];
+    
+    BOOL success = [_pointCloud writeToSTLAtPath:[STLURL path]];
+    
+    return success ? STLURL : nil;
+}
+
 @end
 

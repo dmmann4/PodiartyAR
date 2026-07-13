@@ -1,17 +1,9 @@
-//
-//  ScanningViewRenderer.swift
-//  TrueDepthFusion
-//
-//  Created by Aaron Thompson on 9/23/18.
-//
-
 import AVFoundation
 import Foundation
 import Metal
 import StandardCyborgFusion
 
-class ScanningViewRenderer
-{
+class ScanningViewRenderer {
     private let _device: MTLDevice
     private let _library: MTLLibrary
     private let _commandQueue: MTLCommandQueue
@@ -44,7 +36,7 @@ class ScanningViewRenderer
             
             _depthColoringFilter.encodeCommands(onto: commandBuffer,
                                                 colorBuffer: colorBuffer,
-                                                depthBuffer: nil,
+                                                depthBuffer: depthBuffer,
                                                 outputTexture: outputTexture)
             
             if let depthBuffer = depthBuffer,
