@@ -71,6 +71,10 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
     private lazy var _reconstructionManager = SCReconstructionManager(device: _metalDevice, commandQueue: _algorithmCommandQueue, maxThreadCount: _maxReconstructionThreadCount)
     private lazy var _scanningViewRenderer = ScanningViewRenderer(device: _metalDevice, commandQueue: _visualizationCommandQueue)
     
+    private var _hasShownFirstFrame = false
+    private var _framesReceived = 0
+    private let _framesToSkipBeforeReveal = 3   // tweak if you still see a flash
+    
     private(set) var scans: [ScanType] = []
     
     private var _scansContainerURL: URL {
@@ -94,7 +98,8 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
         _metalLayer.frame = metalContainerView.bounds
         metalContainerView.layer.addSublayer(_metalLayer)
         metalContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusOnTap)))
-        
+        metalContainerView.backgroundColor = .black
+            metalContainerView.alpha = 0
         _cameraManager.delegate = self
         _cameraManager.configureCaptureSession(maxColorResolution: 1920, maxDepthResolution: _useFullResolutionDepthFrames ? 640 : 320, maxFramerate: 30)
         _reconstructionManager.delegate = self
@@ -115,8 +120,9 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
         
         let latestScan = scans.first
         showScansButton.setBackgroundImage(latestScan?.thumbnail, for: UIControl.State.normal)
-//        scanDurationContainerView.isHidden = _tapToStartStop
-        
+        _hasShownFirstFrame = false
+        _framesReceived = 0
+        metalContainerView.alpha = 0
         _cameraManager.startSession { result in
             switch result {
             case .success:
@@ -277,6 +283,18 @@ class ScanningViewController: UIViewController, CameraManagerDelegate, SCReconst
                                    viewMatrix: _scanning ? _latestViewMatrix : matrix_identity_float4x4,
                                    into: _metalLayer,
                                    flipsInputHorizontally: _reconstructionManager.flipsInputHorizontally)
+        
+        if !_hasShownFirstFrame {
+            _framesReceived += 1
+            if _framesReceived > _framesToSkipBeforeReveal {
+                _hasShownFirstFrame = true
+                UIView.animate(withDuration: 0.15) {
+                    DispatchQueue.main.async {
+                        self.metalContainerView.alpha = 1
+                    }
+                }
+            }
+        }
         
         if _scanning {
             _reconstructionManager.accumulate(depthBuffer: depthBuffer,

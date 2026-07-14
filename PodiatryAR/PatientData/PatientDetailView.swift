@@ -16,7 +16,7 @@ struct PatientDetailView: View {
         Form {
             Section {
                 NavigationLink {
-                    InitialStoryboardView()
+                    StartScanView()
                 } label: {
                     Button { } label: {
                         Label("Start New Scan", systemImage: "camera.viewfinder")
@@ -72,6 +72,7 @@ struct PatientDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            
         }
         .navigationTitle(patient.fullName)
         .navigationBarTitleDisplayMode(.inline)

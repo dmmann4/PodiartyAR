@@ -1,42 +1,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 40) {
-                Spacer()
-
-                Text("Podiatry Scan")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-
-                Spacer()
-
-                HStack(spacing: 16) {
-                    NavigationLink {
-                        NewPatientFormView()
-                    } label: {
-                        HomeButtonLabel(title: "New Patient", systemImage: "person.badge.plus")
-                    }
-
-                    NavigationLink {
-                        LoadPatientView()
-                    } label: {
-                        HomeButtonLabel(title: "Load Patient", systemImage: "folder")
-                    }
-
-                    NavigationLink {
-                        StartScanView()
-                    } label: {
-                        HomeButtonLabel(title: "Start Scan", systemImage: "camera.viewfinder")
+    
+@State var showSplash: Bool = true
+    
+var body: some View {
+    ZStack {
+        if showSplash {
+            SplashScreenView()
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        showSplash = false
                     }
                 }
-                .padding(.horizontal)
-
-                Spacer()
-            }
-            .padding()
+            .transition(.opacity)
+            .zIndex(1)
+        } else {
+            HomeView()
+                .transition(.opacity)
         }
+    }
     }
 }
 
@@ -63,4 +46,49 @@ private struct HomeButtonLabel: View {
 
 #Preview {
     ContentView()
+}
+
+struct HomeView: View {
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .center) {
+                    Image("3dFormulaLogo")
+                        .resizable()
+                        .frame(width: 350, height: 400)
+
+                    VStack(alignment: .leading) {
+                        VStack(spacing: 16) {
+                            NavigationLink {
+                                NewPatientFormView()
+                            } label: {
+                                HomeButtonLabel(title: "New Patient", systemImage: "person.badge.plus")
+                            }
+                            
+                            NavigationLink {
+                                LoadPatientView()
+                            } label: {
+                                HomeButtonLabel(title: "Load Patient", systemImage: "folder")
+                            }
+                            
+                            NavigationLink {
+                                StartScanView()
+                            } label: {
+                                HomeButtonLabel(title: "Start Scan", systemImage: "camera.viewfinder")
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+            .background(Color.appBackground.ignoresSafeArea())
+            .navigationTitle("")
+        }
+        .tint(.brandTeal)
+    }
+}
+
+#Preview {
+    HomeView()
 }

@@ -8,11 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		A55DC9C73003B96A0042DB97 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A55DC9C63003B96A0042DB97 /* ZIPFoundation */; };
+		A55DD2D4300660C50042DB97 /* StandardCyborgFusion in Frameworks */ = {isa = PBXBuildFile; productRef = A55DD2D3300660C50042DB97 /* StandardCyborgFusion */; };
+		A55DD2D9300662DF0042DB97 /* StandardCyborgFusion in Frameworks */ = {isa = PBXBuildFile; productRef = A55DD2D8300662DF0042DB97 /* StandardCyborgFusion */; };
+		A55DD2DD300665330042DB97 /* StandardCyborgFusion in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A55DD2D3300660C50042DB97 /* StandardCyborgFusion */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A58A06742FFD6B8600C2862C /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06732FFD6B8600C2862C /* ZipArchive */; };
-		A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */ = {isa = PBXBuildFile; productRef = A58A06762FFD6C9200C2862C /* StandardCyborgFusion */; };
 		A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A58A067B2FFD6D3D00C2862C /* Metal.framework */; };
 		A58A067E2FFD6D4D00C2862C /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A58A067D2FFD6D4D00C2862C /* SceneKit.framework */; };
-		A58A06802FFD6E7D00C2862C /* StandardCyborgFusion in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A58A06762FFD6C9200C2862C /* StandardCyborgFusion */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A58A06802FFD6E7D00C2862C /* StandardCyborgFusion in Embed Frameworks */,
+				A55DD2DD300665330042DB97 /* StandardCyborgFusion in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,10 +79,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A58A06742FFD6B8600C2862C /* ZipArchive in Frameworks */,
+				A55DD2D4300660C50042DB97 /* StandardCyborgFusion in Frameworks */,
 				A58A067E2FFD6D4D00C2862C /* SceneKit.framework in Frameworks */,
 				A58A067C2FFD6D3D00C2862C /* Metal.framework in Frameworks */,
-				A58A06772FFD6C9200C2862C /* StandardCyborgFusion in Frameworks */,
 				A55DC9C73003B96A0042DB97 /* ZIPFoundation in Frameworks */,
+				A55DD2D9300662DF0042DB97 /* StandardCyborgFusion in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,8 +156,9 @@
 			name = PodiatryAR;
 			packageProductDependencies = (
 				A58A06732FFD6B8600C2862C /* ZipArchive */,
-				A58A06762FFD6C9200C2862C /* StandardCyborgFusion */,
 				A55DC9C63003B96A0042DB97 /* ZIPFoundation */,
+				A55DD2D3300660C50042DB97 /* StandardCyborgFusion */,
+				A55DD2D8300662DF0042DB97 /* StandardCyborgFusion */,
 			);
 			productName = PodiatryAR;
 			productReference = A511C5472FE630A300BB83B7 /* PodiatryAR.app */;
@@ -241,8 +244,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */,
-				A58A06752FFD6C9200C2862C /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */,
 				A55DC9C53003B96A0042DB97 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				A55DD2D7300662DF0042DB97 /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A511C5482FE630A300BB83B7 /* Products */;
@@ -633,7 +636,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		A58A06752FFD6C9200C2862C /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */ = {
+		A55DD2D7300662DF0042DB97 /* XCLocalSwiftPackageReference "../StandardCyborgCocoa" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../StandardCyborgCocoa;
 		};
@@ -664,14 +667,18 @@
 			package = A55DC9C53003B96A0042DB97 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
+		A55DD2D3300660C50042DB97 /* StandardCyborgFusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StandardCyborgFusion;
+		};
+		A55DD2D8300662DF0042DB97 /* StandardCyborgFusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StandardCyborgFusion;
+		};
 		A58A06732FFD6B8600C2862C /* ZipArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A58A06722FFD6B8600C2862C /* XCRemoteSwiftPackageReference "ZipArchive" */;
 			productName = ZipArchive;
-		};
-		A58A06762FFD6C9200C2862C /* StandardCyborgFusion */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = StandardCyborgFusion;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

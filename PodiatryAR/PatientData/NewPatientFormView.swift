@@ -58,6 +58,7 @@ struct NewPatientFormView: View {
                     navigateToDetail = true
                 }
             }
+    
         }
         .navigationDestination(isPresented: $navigateToDetail) {
             PatientDetailView(patient: patient)
